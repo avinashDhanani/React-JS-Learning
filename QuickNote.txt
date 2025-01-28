@@ -1,0 +1,580 @@
+React :: 
+
+list of React concepts:
+	1.	JSX
+	2.	Components (Functional & Class)
+	3.	Props
+	4.	State
+	5.	Event Handling
+	6.	Lifecycle Methods (Class Components)
+	7.	React Hooks:
+	•	useState
+	•	useEffect
+	•	useContext
+	•	useReducer
+	•	useMemo
+	•	useCallback
+	•	useRef
+	8.	Virtual DOM
+	9.	Conditional Rendering
+	10.	Lists and Keys
+	11.	React Router (Routing & Navigation)
+	12.	Context API
+	13.	Error Boundaries
+	14.	Portals
+	15.	Controlled vs. Uncontrolled Components
+	16.	State Lifting
+	17.	Higher-Order Components (HOCs)
+	18.	React Fragments
+	19.	Prop Drilling
+	20.	Performance Optimization:
+	•	React.memo
+	•	useMemo
+	•	useCallback
+	21.	Refs and DOM Manipulation
+	22.	Custom Hooks
+	23.	Lazy Loading & Code Splitting
+	24.	React.StrictMode
+	25.	Forwarding Refs
+
+Let me know which ones you’d like to explore in detail!.
+
+
+——————————————————————————————————————————————————————————————————————————————————
+JSX ::
++++++
+1. What is JSX?
+	•	JSX is a syntax extension for JavaScript that allows you to write HTML-like code directly in your JavaScript files.
+	•	It makes your UI structure more readable and expressive.
+	•	Under the hood, JSX gets transpiled into JavaScript using tools like Babel.
+
+2. Why Use JSX?
+	•	Combines UI structure and logic in the same file for better organization.
+	•	Makes it easier to visualize the component hierarchy.
+3.  Why must JSX return a single parent element?
+	•	Reason: JSX must return a single parent element because React’s rendering engine expects one root element for each component. This ensures proper structure and prevents ambiguity when React builds the Virtual DOM tree.
+
+4.  Can you write JSX without Babel? Why or why not?
+    * No, you cannot directly use JSX without Babel (or a similar transpiler) because browsers do not understand JSX.
+Reason
+	•	JSX is not valid JavaScript—it’s a syntax sugar that gets transpiled into plain JavaScript (specifically, React.createElement() calls).
+	•	Babel (or other tools like SWC or esbuild) converts JSX into JavaScript code that browsers can execute.
+
+
+——————————————————————————————————————————————————————————————————————————————————
+Components ::
++++++++++++
+
+A component in React is a reusable piece of UI that encapsulates logic and rendering. Components allow you to break down your application into smaller, manageable pieces.
+
+Types of Components
+	1.	Functional Components (Modern approach)
+	2.	Class Components (Older approach, still used in some codebases)
+
+1. Functional Components
+	•	Functions that return JSX.
+	•	Introduced in React 16.8 with Hooks, functional components became powerful enough to handle all component logic.
+
+	Features:
+	•	Simpler and cleaner.
+	•	Use React Hooks like useState, useEffect, etc., for state and side effects.
+
+2. Class Components
+	•	Used before Hooks were introduced.
+	•	Extend React.Component and must include a render() method to return JSX.
+
+	Syntax:
+		class Greeting extends React.Component {
+ 			 render() {
+    				return <h1>Hello, {this.props.name}!</h1>;
+  			}
+		}
+
+	Features:
+	•	Can use lifecycle methods (e.g., componentDidMount, shouldComponentUpdate).
+	•	Heavier syntax compared to functional components.
+
+——————————————————————————————————————————————————————————————————————————————————
++++++++++++++++++
+Props (Properties) ::
+++++++++++++++++
+	•	Props are inputs passed to a component to customize its behavior.
+	•	Props are read-only (immutable).
+
+	Example:
+		function Welcome(props) {
+ 			 return <h1>Welcome, {props.name}!</h1>;
+		}
+		// Usage:
+		<Welcome name="Avinash" />
+
+——————————————————————————————————————————————————————————————————————————————————
+++++++
+State ::
+++++++
+	•	State is a way to store and manage dynamic data in a component.
+	•	Unlike props, state is mutable (can be updated).
+
+	Example with Functional Components:
+		
+		import React, { useState } from "react";
+		function Counter() {
+  			const [count, setCount] = useState(0);
+
+  			return (
+    				<div>
+     					 <p>Count: {count}</p>
+      					<button onClick={() => setCount(count + 1)}>Increment</button>
+    				</div>
+  			);
+		}
+——————————————————————————————————————————————————————————————————————————————————
++++++++++++++++++++++++++
+Event Handling in React ::
++++++++++++++++++++++++++
+	-> Event handling in React is how you manage user interactions, such as clicks, typing, submitting forms, etc. It works similarly to handling events in vanilla JavaScript but with some React-specific differences.
+
+	* How to Handle Events in React
+		1.	Events in React use camelCase (e.g., onClick instead of onclick).
+		2.	You pass a function as the event handler, not a string.
+		3.	Event handling is consistent across all browsers because React normalizes events (called Synthetic Events).
+
+	* Basic Example of Event Handling
+		function Button() {
+  			function handleClick() {
+    				alert("Button clicked!");
+  			}
+			return <button onClick={handleClick}>Click Me</button>;
+		}
+
+	* Event Object in React
+		1. When an event is triggered, React passes an event object (a SyntheticEvent) to the event handler. This object is cross-browser compatible and has the same properties as the native DOM event.
+
+		Example:
+			function InputBox() {
+  				function handleChange(event) {
+    					console.log("Typed:", event.target.value); // Access the input value
+ 				 }
+				 return <input type="text" onChange={handleChange} />;
+			}
+
+	* Prevent Default Behavior
+		1.  To prevent default behavior (like form submission or anchor tag navigation), use event.preventDefault().
+	
+		Example:
+			function Form() {
+ 				 function handleSubmit(event) {
+    					event.preventDefault(); // Prevent form submission
+    					alert("Form submitted!");
+  				}
+
+  				return (
+    					<form onSubmit={handleSubmit}>
+      						<button type="submit">Submit</button>
+   					 </form>
+  				);
+			}
+
+	* Stop Event Propagation
+		1. To stop event bubbling, use event.stopPropagation().
+		
+		Example:
+
+		function Parent() {
+ 			 function handleParentClick() {
+    				alert("Parent clicked!");
+ 			 }
+		 	function handleChildClick(event) {
+    				event.stopPropagation(); // Prevents the parent click
+    				alert("Child clicked!");
+  			}			
+
+  			return (
+    				<div onClick={handleParentClick}>
+     					 <button onClick={handleChildClick}>Click Me</button>
+   				 </div>
+  			);
+		}
+
+Interview Question Examples
+	1.	How does event handling differ in React compared to vanilla JavaScript?
+	2.	What is a SyntheticEvent in React?
+	Ans ::
+		A SyntheticEvent in React is a wrapper around the native browser event. It is part of React’s cross-browser compatibility system, providing a consistent interface for handling events across different browsers.
+		
+		Key Features of SyntheticEvent:
+			1.	Cross-browser Compatibility:
+				•	React normalizes events so you can rely on a consistent API, regardless of browser differences.
+			2.	Event Pooling:
+				•	SyntheticEvents are pooled for performance reasons. This means that the event object is reused for multiple events, and its properties are reset after the event handler finishes executing.
+			3.	Access to Native Event:
+				•	The native DOM event is accessible via event.nativeEvent.
+
+	3.	How can you pass arguments to an event handler?
+	Ans :: 
+		<button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
+
+	4.	How do you bind methods in class components to avoid this issues?
+	Ans :: 
+		<button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
+
+——————————————————————————————————————————————————————————————————————————————————
+
++++++++++++++++++++++++
+Lifecycle of Components    ::
++++++++++++++++++++++++
+Functional Components (Hooks):
+	•	Mounting: Use useEffect with an empty dependency array [].
+	•	Updating: Use useEffect with specific dependencies.
+	•	Unmounting: Return a cleanup function in useEffect. 
+				       : When you want to clean up effects from the previous render before executing the subsequent effects that's time to return a function with clean up logic.
+
+
+Class Components:
+	•	Constructor: initializ variables
+	•	Mounting: componentDidMount
+	•	Updating: componentDidUpdate
+	•	Unmounting: componentWillUnmount
+
+	React lifecycle can be visualized in three phases:
+	•	Mounting: constructor → getDerivedStateFromProps → render → componentDidMount.
+	•	Updating: getDerivedStateFromProps → shouldComponentUpdate → render → componentDidUpdate.
+	•	Unmounting: componentWillUnmount.
+
+
+Key Differences: Functional vs. Class Components
+
+Aspect				|	Functional Component			 |	Class Component
+Definition			|       JavaScript function.	   			 |       ES6 class extending React.Component.
+State	        		|       Managed using Hooks (useState).	 |       Managed using this.state.
+Lifecycle Methods	|	Managed using useEffect.			 | 	 Uses lifecycle methods (componentDidMount, etc.).
+Code Simplicity		| 	Cleaner and concise.				 |	 More verbose.
+
+	Interview Question Examples:
+		1.	What are the differences between functional and class components?
+		2.	How are props different from state?
+		3.	Can you update props inside a component? Why or why not?
+		4.	What is the significance of the key prop in React lists?
+
+
+——————————————————————————————————————————————————————————————————————————————————
+
++++++++++++++
+React Hooks   ::
++++++++++++++
+-> React Hooks are special functions that let you use React features like state and lifecycle methods in functional components. They were introduced in React v16.8 and made functional components as powerful as class components.
+
+Why React Hooks?
+	1.	Simplifies code by avoiding class components and the this keyword.
+	2.	Allows reusing logic with custom hooks.
+	3.	Makes stateful logic easier to manage in functional components.
+
+Core React Hooks
+	1. useState
+	2. useEffect
+	3. useContext
+	4. useReducer
+	5. useRef
+	6. useMemo
+	7. useCallback
+	8. useLayoutEffect
+	9. useImperativeHandle
+Custom Hooks
+
+
+Core React Hooks
+	1. useState ::
+		-> Adds state to functional components.
+		->  Returns an array with:
+			•	State Variable
+			•	Setter Function
+		ex. 
+			const [count, setCount] = useState(0);
+
+	2. useEffect ::
+		•	Handles side effects like API calls, subscriptions, or DOM manipulation.
+		•	Mimics lifecycle methods like componentDidMount, componentDidUpdate, and componentWillUnmount.
+			
+		ex. 
+			useEffect(() => {
+    				const interval = setInterval(() => {
+      					setSeconds((prev) => prev + 1);
+   				 }, 1000);
+
+    				return () => clearInterval(interval); // Cleanup on unmount
+			  }, []); // Dependency array to control when the effect runs
+
+	3. useContext ::
+		•	Accesses the value of a Context in the component tree without prop drilling.
+		
+		ex. 
+			import React, { useContext, createContext } from "react";
+
+			const UserContext = createContext();
+		
+			function App() {
+				  return (
+    					<UserContext.Provider value="Avinash">
+     						 <Greeting />
+    					</UserContext.Provider>
+ 				 );
+			}
+
+			function Greeting() {
+				  const userName = useContext(UserContext);
+				  return <p>Hello, {userName}!</p>;
+			}
+
+	4. useReducer
+		•	Manages state more predictably using a reducer function (useful for complex state logic).
+	
+	5. useRef :: 
+		•	The useRef Hook allows you to persist values between renders.
+		•	It can be used to store a mutable value that does not cause a re-render when updated.
+		•	It can be used to access a DOM element directly.
+
+		Does Not Cause Re-renders
+			-> If we tried to count how many times our application renders using the useState Hook, we would be caught in an infinite loop since this Hook itself causes a re-render.
+			-> To avoid this, we can use the useRef Hook.
+
+
+		
+
+
+	
+	6. useMemo ::
+		•	Optimizes performance by memoizing expensive computations.
+
+	7. useCallback ::
+		•	Memoizes a callback function to prevent unnecessary re-creation.
+
+	8. useLayoutEffect :: 
+		-> The React JS useLayoutEffect works similarly to useEffect but rather works asynchronously like the useEffect hook, it fires synchronously after all DOM loading is done loading. This is useful for synchronously re-rendering the DOM and also to read the layout from the DOM. But to prevent blocking the page loading, we should always use the useEffect hook.
+
+		ex. 
+			 // 8. useLayoutEffect :: 
+    				useLayoutEffect(() => {
+       					 console.log(
+   						 "UseLayoutEffect is called with the counter of ",
+            					counter
+       					 );		
+   				 }, [counter]);
+
+
+
+
+Custom Hooks
+	• You can create your own hooks to encapsulate reusable logic.
+	
+	Ex. 
+		import React, { useState, useEffect } from "react";
+
+		function useWindowWidth() {
+ 			 const [width, setWidth] = useState(window.innerWidth);
+
+  			useEffect(() => {
+  				  function handleResize() {
+    					 setWidth(window.innerWidth);
+    				}
+    				window.addEventListener("resize", handleResize);
+
+    				return () => window.removeEventListener("resize", handleResize);
+  			}, []);
+
+ 			 return width;
+		}
+
+		function App() {
+  			const width = useWindowWidth();
+  			return <p>Window Width: {width}px</p>;
+		}
+
+——————————————————————————————————————————————————————————————————————————————————
++++++++++++++++++
+Virtual DOM ::
++++++++++++++++++
+
+	-> The Virtual DOM (VDOM) is a lightweight representation of the real DOM. It is one of React’s core features, designed to optimize rendering performance by minimizing direct manipulation of the DOM.
+
+	How Virtual DOM Works
+		1.	Virtual DOM Creation:
+			•	React creates a virtual representation of the actual DOM in memory. This is known as the Virtual DOM tree.
+
+		2.	Comparison (Diffing Algorithm):
+			•	When the state or props change, React creates a new Virtual DOM tree.
+			•	React compares the new Virtual DOM tree with the previous one to identify differences (using a diffing algorithm).
+
+		3.	Reconciliation:
+			•	React updates only the changed parts of the real DOM, ensuring efficient updates.
+
+	Why Virtual DOM is Used ::
+		1.	Performance Optimization:
+			•	Direct DOM manipulation is slow because the DOM is large and complex. React minimizes this by updating only the necessary parts of the DOM.
+
+		2.	Improved Developer Experience:
+			•	React allows developers to think in terms of a virtual representation, abstracting away the complexities of manual DOM manipulation.
+
+		3.	Cross-Browser Consistency:	
+			•	React ensures consistent behavior across different browsers with its virtual DOM layer.
+
+		
+	Key Advantages of Virtual DOM
+		1.	Batch Updates:
+			•	React batches multiple updates together to reduce the number of DOM manipulations.
+
+		2.	Reusability:
+			•	Components and their state can be reused efficiently without impacting performance.
+
+		3.	Predictability:
+			•	React’s reconciliation process ensures that the application state and UI are always in sync.
+	
+	Virtual DOM vs Real DOM
+		
+Feature	Virtual DOM 	Real DOM
+Definition	A lightweight copy of the real DOM.	The actual representation in the browser.
+Performance	Faster updates using diffing.	Slower due to direct manipulation.
+Update	Updates only the differences.	Updates the entire DOM tree.
+Purpose	Optimizes rendering.	Renders the final UI.
+
+	Virtual DOM Process
+		1.	Initial Rendering:
+			•	React renders the initial UI and creates the Virtual DOM.
+		
+		2.	Triggering Updates:
+			•	When state or props change, React re-renders the component to create a new Virtual DOM tree.
+
+		3.	Diffing:
+			•	The diffing algorithm compares the new Virtual DOM with the old Virtual DOM to find changes.
+
+		4.	Patch:
+			•	Only the parts of the real DOM affected by the changes are updated.
+
+	Reconciliation Process
+		1.	React compares the new Virtual DOM with the previous one.
+		2.	It determines the minimum set of changes required.
+		3.	Updates are batched and applied to the real DOM efficiently.
+
+	React Fiber
+		•	React Fiber is the underlying engine of React that optimizes the rendering process.
+		•	It splits rendering into units of work and pauses when higher-priority tasks (like user input) come in.
+
+	Interview Questions for Virtual DOM
+		1.	What is the Virtual DOM in React, and how does it differ from the real DOM?
+		2.	Explain how the Virtual DOM improves performance.
+		3.	What is the reconciliation process in React?
+		4.	How does React identify changes in the Virtual DOM?
+		5.	What is React Fiber, and how does it enhance React’s rendering process?
+
+
+
+——————————————————————————————————————————————————————————————————————————————————
++++++++++++++++++++++++++++++
+Conditional Rendering ::
++++++++++++++++++++++++++++++
+
+		-> Conditional rendering in React allows you to render different elements or components based on certain conditions. It works similarly to conditional statements in JavaScript, like if-else or the ternary operator.
+
+	ex ::
+		function Greeting(props) {
+  			if (props.isLoggedIn) {
+    				return <h1>Welcome back!</h1>;
+  			} else {
+    				return <h1>Please log in.</h1>;
+ 			 }
+		}
+
+Interview Questions
+	1.	What is conditional rendering in React, and why is it useful?
+	2.	When should you use the logical && operator instead of the ternary operator?
+	3.	What are some common ways to handle complex conditional rendering logic?
+	4.	Can conditional rendering impact performance? How?
+		Ans . 
+			 Mounting and Unmounting Components
+				
+			When components are conditionally rendered (null vs. actual JSX), React has to handle mounting and unmounting, which can be costly for components with side effects or subscriptions.
+
+		Solution:
+			-> Use the CSS visibility property or similar techniques to hide components without unmounting them:			
+			ex. 
+				function App({ isVisible }) {
+  					return (
+   						 <div style={{ visibility: isVisible ? "visible" : "hidden" }}>
+      							<ExpensiveComponent />
+    						</div>
+ 					 );
+				}
+
+	5.	How can you handle fallback content during asynchronous operations like API calls?
+		-> When making API calls in React, the UI often needs to handle three key states:
+			1.	Loading State: While the data is being fetched.
+			2.	Success State: When data is successfully fetched.
+			3.	Error State: If there’s an error during the API call.
+		
+		Providing fallback content ensures a smooth user experience during the loading and error states.
+
+
+——————————————————————————————————————————————————————————————————————————————————
++++++++++++++++++++++++++++++++++++++++++++
+React Router (Routing & Navigation) ::
++++++++++++++++++++++++++++++++++++++++++++
+	React Router is a library for managing navigation and routing in React applications. It enables you to define multiple routes for different components or pages and seamlessly navigate between them without reloading the page.
+
+	Core Features of React Router
+		1.	Declarative Routing: Define routes in a clear and readable way.
+		2.	Dynamic Routing: Routes are created based on the app state or data.
+		3.	Nested Routes: Support for rendering child routes within parent routes.
+		4.	URL Parameters: Pass dynamic values through the URL.
+		5.	Programmatic Navigation: Navigate via code using the useNavigate hook.
+		6.	Protected Routes: Restrict access to specific routes based on conditions.
+
+
+——————————————————————————————————————————————————————————————————————————————————
++++++++++++++++
+Context API ::
++++++++++++++++
+
+	-> The Context API in React provides a way to share data (like state, theme, or user authentication) across the component tree without passing props manually at every level. It’s especially useful for managing global or app-wide state.
+
+	Why Use Context API?
+		1.	To avoid prop drilling, where props are passed through multiple layers of components unnecessarily.
+		2.	To manage global state efficiently in smaller or medium-scale applications.
+		3.	To share data such as themes, user authentication, or application language.
+
+	Key Concepts in Context API
+		1.	Context Creation: A context is created using React.createContext.
+			ex. 
+				const ThemeContext = createContext();
+
+		2.	Provider: A Provider component makes the context available to its child components.
+			ex. 
+				<ThemeContext.Provider value={{ theme, setTheme }}>
+      					<div>
+        					<h1>Context API Example</h1>
+        					<ChildComponent />
+      					</div>
+    				</ThemeContext.Provider>
+
+		3.	Consumer: Components that need the context can consume it using useContext or Context.Consumer.
+			ex. 
+				const { theme, setTheme } = useContext(ThemeContext);
+
+	Limitations of Context API
+		1.	Re-rendering Issues:
+			•	If the value provided to the context changes, all consuming components will re-render.
+		2.	Not Ideal for Large-Scale State Management:
+			•	For large applications, consider using state management libraries like Redux, MobX, or Zustand.
+
+
+——————————————————————————————————————————————————————————————————————————————————
++++++++++++++++++++++++++++
+ERROR BOUNDARIES ::
++++++++++++++++++++++++++++
+
+	-> Error Boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of crashing the application. They provide a clean and user-friendly way to handle runtime errors.
+
+	Why Use Error Boundaries?
+		1.	Prevent the entire React application from crashing due to a JavaScript error.
+		2.	Display fallback UI gracefully in case of an error.
+		3.	Log errors for debugging or reporting.
+
+	
