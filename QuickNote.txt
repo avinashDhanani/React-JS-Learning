@@ -1,4 +1,4 @@
-React JS 
+React JS  
 
 
 Sure! Here’s a concise list of React concepts:
@@ -245,11 +245,11 @@ Class Components:
 
 Key Differences: Functional vs. Class Components
 
-Aspect				|	Functional Component			 |	Class Component
-Definition			|       JavaScript function.	   			 |       ES6 class extending React.Component.
-State	        		|       Managed using Hooks (useState).	 |       Managed using this.state.
+Aspect				|	Functional Component				 |	Class Component
+Definition				|       JavaScript function.	   				 |       ES6 class extending React.Component.
+State	        			|       Managed using Hooks (useState).	 |       Managed using this.state.
 Lifecycle Methods	|	Managed using useEffect.			 | 	 Uses lifecycle methods (componentDidMount, etc.).
-Code Simplicity		| 	Cleaner and concise.				 |	 More verbose.
+Code Simplicity		| 	Cleaner and concise.					 |	 More verbose.
 
 	Interview Question Examples:
 		1.	What are the differences between functional and class components?
@@ -578,6 +578,27 @@ ERROR BOUNDARIES ::
 		2.	Display fallback UI gracefully in case of an error.
 		3.	Log errors for debugging or reporting.
 
+Ex. 
+	import React from "react";
+
+	class ClassBoundary extends React.Component {
+		 state = { hasError: false };
+
+		   static getDerivedStateFromError(error) {
+        		return { hasError: true }
+  		  }
+   		 componentDidCatch(error, info) {
+    		    console.log("error :: ", error, " info :: ", info)
+   		 }
+   		 render() {
+   			     if(this.state.hasError){
+     				       return <h1>{this.state.fallback}</h1>;
+     				   }
+     		   return this.state.children;
+  		  }
+	}
+	export default ClassBoundary;
+
 
 ——————————————————————————————————————————————————————————————————————————————————
 ++++++++++++++++
@@ -618,3 +639,208 @@ React Fragments ::
 	Key Takeaway
 		•	Use <React.Fragment> when you need to add attributes like key.
 		•	Use the short syntax (<>) for simple use cases without attributes.
+
+——————————————————————————————————————————————————————————————————————————————————
+++++++++++++++++++++++++++++++++++++++++++
+React Router (Routing & Navigation) ::
+++++++++++++++++++++++++++++++++++++++++++
+->     React Router is a standard library for routing in React applications. It enables navigation between different views of an application, allows for dynamic URLs, and provides tools to handle complex routing requirements, all without a full-page reload.
+
+
+Key Features of React Router
+	1.	Declarative Routing: Define routes using components.
+	2.	Dynamic Routing: Create routes dynamically based on the app’s state or user interaction.
+	3.	Nested Routes: Build hierarchical layouts with child routes.
+	4.	URL Parameters: Pass data through the URL.
+	5.	Programmatic Navigation: Navigate between routes using code.
+	6.	Route Guards: Protect routes with conditions (e.g., authentication).
+	7.	Error Handling: Handle 404 and other custom errors.
+
+Ex :: 
+		function App() {
+  			return (
+   				 <BrowserRouter>
+   					   <Routes>
+     						   <Route path="/" element={<Home />} />
+        					   <Route path="/about" element={<About />} />
+     					    </Routes>
+    			         </BrowserRouter>
+ 			 );
+		}
+
+	Navigation Between Pages
+		import { Link } from "react-router-dom";
+
+		function Navbar() {
+  			return (
+   				 <nav>
+   					   <Link to="/">Home</Link>
+   					   <Link to="/about">About</Link>
+ 				   </nav>
+			  );
+		}
+
+
+Advanced Features ::
+1.	URL Parameters
+	•	Capture dynamic parts of the URL using :paramName syntax.
+	•	Access params using useParams.
+
+		import { useParams } from "react-router-dom";
+
+		function Product() {
+ 			 const { id } = useParams(); // Access URL parameter
+			  return <h1>Product ID: {id}</h1>;
+		}
+
+		function App() {
+			  return (
+				    <BrowserRouter>
+					      <Routes>
+						        <Route path="/product/:id" element={<Product />} />
+ 					     </Routes>
+   					 </BrowserRouter>
+  		)};
+
+
+2.	Nested Routes
+	Define child routes using the Outlet component.
+	
+	ex :: 
+		import { Outlet } from "react-router-dom";
+
+		function Dashboard() {
+  			return (
+   				 <div>
+    					  <h1>Dashboard</h1>
+     					 <Outlet />
+   				 </div>
+ 			 )}
+
+		function App() {
+  			return (
+   				 <BrowserRouter>
+   					   <Routes>
+   						     <Route path="/dashboard" element={<Dashboard />}>
+   							       <Route path="stats" element={<h1>Stats Page</h1>} />
+    						    </Route>
+     					 </Routes>
+   				 </BrowserRouter>
+ 			 )}
+
+3.	Protected Routes
+	•	Create route guards to restrict access based on conditions (e.g., authentication).
+
+		function ProtectedRoute({ children }) {
+ 			 const isAuthenticated = false; // Replace with actual auth logic
+ 			 return isAuthenticated ? children : <h1>Access Denied</h1>;
+		}
+
+		function App() {
+			  return (
+				    <BrowserRouter>
+ 					     <Routes>
+   						     <Route
+   						      	 	path="/dashboard"
+   						      		 element={
+   								         <ProtectedRoute>
+     									         <Dashboard />
+     								       </ProtectedRoute>
+     							     }
+     							   />
+     						 </Routes>
+    				</BrowserRouter>
+  			)
+		}
+
+
+
+
+
+
+++++++++++++++++++++++
+Redux single source of truth
+++++++++++++++++++++++
+
+1. UI Layer :: handler function fire.
+2. Handler Function :: Event Dispatch 
+3. Redux Store :: Dispatch Action
+4. Reducer : update the state and store
+
+For Creation 
+	Steps :: 1
+		
+		create slice ::
+			import { createSlice } from '@reduxjs/toolkit'
+
+			const cartSlices = createSlice({
+   				 name: 'cart',
+				initialState: [],
+			        reducers: {
+   				   	  addToCart: (state, action) => {
+            					if (action.payload.type == "ADD")  state.push({ id: action.payload.id, name: action.payload.name })
+      					  },
+       					 removeFromCart: (state, action) => { }
+    				},
+			})
+
+		export const { addToCart, removeFromCart } = cartSlices.actions
+		export default cartSlices.reducer
+
+		Need to Create Store
+
+			import { configureStore } from '@reduxjs/toolkit'
+			import cartReducer from "./cartSlice/cartSlice"
+
+			export const store = configureStore({
+			    reducer: {
+ 			       cart: cartReducer
+ 			   },
+			})
+
+For Using Redux
+	Provide store
+		import { Provider } from "react-redux”;
+		import { store } from './redux/store.js';
+		
+		<Provider store={store}>
+   			 <App />
+		</Provider>
+	
+	For Reading Data
+		import { useSelector } from 'react-redux’;
+		const productRedux = useSelector((state) => state.cart);
+
+	For Updating Data
+		import { useDispatch } from “react-redux”;
+		import { addToCart, removeFromCart } from '../../redux/cartSlice/cartSlice';
+
+   		const dispatch = useDispatch();
+
+		<button onClick={() => { dispatch(addToCart({ type: "ADD", name: "ABCD", id: new Date().getTime() })) }}>Add</button>
+            
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
